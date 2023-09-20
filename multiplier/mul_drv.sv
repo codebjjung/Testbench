@@ -11,7 +11,6 @@ class driver;
 			pkt.print("Driver");
 			d_vif.a <= pkt.a;
 			d_vif.b <= pkt.b;
-			d_vif.y <= pkt.y;
 		end
 	endtask
 endclass
