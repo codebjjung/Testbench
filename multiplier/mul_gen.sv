@@ -8,7 +8,7 @@ class generator;
 			pkt.randomize();
 			$display("[%0t] [Generator] %0d/10 create item", $time, i);
 			drv_mbx.get(pkt);
-			$display("[%0t] [Generator] Generate complete", $time);
+			$display("[%0t] [Generator] Generating complete", $time);
 			@(drv_done)
 		end
 	endtask
