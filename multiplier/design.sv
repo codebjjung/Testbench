@@ -1,8 +1,5 @@
-module mul(
-	input a, b,
-	output y
-);
+module mul(mul_if _if);
 
-assign y = a * b;
+assign _if.y = _if.a * _if.b;
 
 endmodule
