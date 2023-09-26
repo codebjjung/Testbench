@@ -9,9 +9,9 @@ module tb;
     task chmachine(input string f_name, input string s_name, input real amount);
       real ch;
       if (f_name == "DOLLAR") begin
-        ch = amount / EURO;
-      end else begin
         ch = amount * EURO;
+      end else begin
+        ch = amount / EURO;
       end
 
       this.display(f_name, s_name, amount, ch);
@@ -26,9 +26,9 @@ module tb;
     task chmachine(input string f_name, input string s_name, input real amount);
       real ch;
       if (f_name == "DOLLAR") begin
-        ch = amount / WON;
-      end else begin
         ch = amount * WON;
+      end else begin
+        ch = amount / WON;
       end
 
       super.display(f_name, s_name, amount, ch);
@@ -39,9 +39,9 @@ module tb;
     task chmachine(input string f_name, input string s_name, input real amount);
       real ch;
       if (f_name == "DOLLAR") begin
-        ch = amount / YEN;
-      end else begin
         ch = amount * YEN;
+      end else begin
+        ch = amount / YEN;
       end
 
       super.display(f_name, s_name, amount, ch);
