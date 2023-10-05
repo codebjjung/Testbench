@@ -9,9 +9,9 @@ module tb;
     task chmachine(input string f_name, input string s_name, input real amount);
       real ch;
       if (f_name == "DOLLAR") begin
-        ch = amount * EURO;
+        ch = amount * rate;
       end else begin
-        ch = amount / EURO;
+        ch = amount / rate;
       end
 
       this.display(f_name, s_name, amount, ch);
@@ -23,29 +23,15 @@ module tb;
   endclass
 
   class won extends change;
-    task chmachine(input string f_name, input string s_name, input real amount);
-      real ch;
-      if (f_name == "DOLLAR") begin
-        ch = amount * WON;
-      end else begin
-        ch = amount / WON;
-      end
-
-      super.display(f_name, s_name, amount, ch);
-    endtask
+	  function new();
+		  this.rate = WON;
+	  endfunction
   endclass
 
   class yen extends change;
-    task chmachine(input string f_name, input string s_name, input real amount);
-      real ch;
-      if (f_name == "DOLLAR") begin
-        ch = amount * YEN;
-      end else begin
-        ch = amount / YEN;
-      end
-
-      super.display(f_name, s_name, amount, ch);
-    endtask
+	  function new();
+		  this.rate = YEN;
+	  endfunction
   endclass
 
   initial begin
