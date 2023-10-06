@@ -81,3 +81,35 @@ module tb
       psel = 0;
       penable = 0;
     end
+
+    //data read
+    $display("APB data read");
+    i = 0;
+
+    repeat (16) begin
+      @(posedge clk) begin
+        paddr = #1 (`BASE_ADDR + 4i);
+        pstrb = #1 4'b1111;
+        pwrite = #1 0;
+        psel = #1 1;
+      end
+      @(posedge clk);
+      penable = #1 1;
+      repeat(3)
+        @(posedge clk);
+      if(mem[i] != prdata)
+        $error("ERROR");
+      else
+        $display("PASS");
+      #20;
+      i=i+1;
+      pwrite = 0;
+      psel = 0;
+      penable = 0;
+    end
+
+    $display("FINISH WRITE, READ TEST");
+    $finish;
+  end
+
+endmodule
