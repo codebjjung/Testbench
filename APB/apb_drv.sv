@@ -18,4 +18,12 @@ class driver;
 
    task boot;
       clk_vif.clk = 0;
-
+      d_vif.nrst = 0;
+      d_vif.paddr = 0;
+      d_vif.pstrb = 4'b1111;
+      d_vif.pwrite = 0;
+      d_vif.psel = 0;
+      d_vif.penable = 0;
+      @ (posedge clk_vif.clk);
+      d_vif.nrst = 1;
+   endtask
