@@ -27,3 +27,24 @@ class driver;
       @ (posedge clk_vif.clk);
       d_vif.nrst = 1;
    endtask
+
+   task apb_write(
+         input bit [7:0] addr,
+         input bit [31:0] data
+   );
+
+   @ (negedge clk_vif.clk);
+   d_vif.paddr = addr;
+   d_vif.pwrite = 1;
+   d_vif.psel = 1;
+   d_vif.pwdata = data;
+
+   @ (negedge clk_vif.clk);
+   d_vif.penable = 1;
+
+   @ (posedge clk_vif.clk);
+   @ (posedge clk_vif.clk);
+   d_vif.psel = 0;
+   d_vif.penable = 0;
+   $display("[%0t] Write finish, pwdata = %0h", d_vif.pwdata);
+endtask
