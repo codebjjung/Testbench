@@ -34,17 +34,34 @@ class driver;
    );
 
    @ (negedge clk_vif.clk);
-   d_vif.paddr = addr;
-   d_vif.pwrite = 1;
-   d_vif.psel = 1;
-   d_vif.pwdata = data;
+      d_vif.paddr = addr;
+      d_vif.pwrite = 1;
+      d_vif.psel = 1;
+      d_vif.pwdata = data;
 
    @ (negedge clk_vif.clk);
-   d_vif.penable = 1;
+      d_vif.penable = 1;
 
-   @ (posedge clk_vif.clk);
-   @ (posedge clk_vif.clk);
-   d_vif.psel = 0;
-   d_vif.penable = 0;
-   $display("[%0t] Write finish, pwdata = %0h", d_vif.pwdata);
-endtask
+   @ (negedge clk_vif.clk);
+      d_vif.psel = 0;
+      d_vif.penable = 0;
+      $display("[%0t] Write finish, pwdata = %0h", d_vif.pwdata);
+   endtask
+
+   task apb_read(input bit [7:0] addr);
+      @ (negedge clk_vif.clk);
+         d_vif.paddr = addr;
+         d_vif.pwrite = 0;
+         d_vif.psel = 1;
+
+      @ (negedge clk_vif.clk);
+         d_vif.penable = 1;
+
+      @ (negedge clk_vif.clk);
+         d_vif.pwrite = 1;
+         d_vif.psel = 0;
+         d_vif.penable = 0;
+      @ (posedge clk_vif.clk);
+      $display("[%0t] [Driver] READ FINISH!! paddr : %0h prdata : %0h", $time, d_vif.paddr, d_vif.prdata);
+   endtask
+endclass
