@@ -46,4 +46,9 @@ initial begin
    #600;
    $finish;
 end
+
+initial begin
+   $fsdbDumpfile("apb.fsdb");
+   $fsdbDumpvasr(0, tb);
+end
 endmodule
