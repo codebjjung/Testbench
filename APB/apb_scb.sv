@@ -6,14 +6,15 @@ class scoreboard;
 
       forever begin
          Packet pc;
+         #30
          scb_mbx.get(pc);
 
          $display("[%0t] [Scoreboard] addr : %0h pwdata : %0h prdata : %0h", pc.paddr, pc.pwdata, pc.prdata);
-         if (pc.pwdata) begin
+         if (pc.pwdata == mem[pc.paddr]) begin
             $display("Write PASS");
             end
 
-         if (pc.prdata) begin
+         if (pc.prdata == mem[pc.paddr]) begin
             $display("Read PASS");
          end
       end
