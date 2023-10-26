@@ -1,4 +1,13 @@
 `timescale 1ns/1ps
+`include "design.sv"
+`include "apb_if.sv"
+`include "apb_trans.sv"
+`include "apb_gen.sv"
+`include "apb_drv.sv"
+`include "apb_mon.sv"
+`include "apb_scb.sv"
+`include "apb_env.sv"
+`include "apb_test.sv"
 
 module tb;
 reg clk;
@@ -12,7 +21,7 @@ reg penable;
 reg [3:0] pstrb;
 reg pready;
 wire slverr;
-wire [31:0] prdata;
+reg [31:0] prdata;
 
 assign clk = clk_if.clk;
 assign nrst = apb_if.nrst;
@@ -34,7 +43,7 @@ initial begin
    t0.e0.apb_vif = apb_if;
    t0.e0.clk_vif = clk_if;
    t0.run();
-   #10000;
+   #600;
    $finish;
 end
 endmodule
