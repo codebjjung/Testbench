@@ -81,3 +81,18 @@ begin
    end
 end
 
+always @(posedge clk) begin
+   if(rst) begin
+      tx_max <= 0;
+      tx_count <= 0;
+      tx_clk <= 0;
+   end else begin
+      if (tx_count <= tx_max/2) begin
+         tx_count <= tx_count + 1;
+      end else begin
+         tx_clk <= ~tx_clk;
+         tx_count <= 0;
+      end
+   end
+end
+endmodule
