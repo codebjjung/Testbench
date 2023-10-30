@@ -146,3 +146,60 @@ always @(posedge tx_clk) begin
    else
       state <= next_state;
 end
+
+always@(*) begin
+   case(state)
+      idle :
+      tx_done = 1'b0;
+      tx = 1'b1;
+      tx_reg = {(8){1'b0}};
+      tx_err = 0;
+      if(tx_start)
+         next_state = start_bit;
+      else
+         next_state = idle;
+
+      start_bit :
+      tx_reg = tx_data;
+      tx = start_b;
+      next_state = send_data;
+
+      send_data :
+      if(count < (lendth -1)) begin
+         next_state = send_data;
+         tx = tx_reg[count];
+      end
+      else if(parety_en) begin
+         tx = tx_reg[count];
+         next_state = send_parity;
+      end
+      else begin
+         tx = tx_reg[count];
+         next_state = send_first_stop;
+      end
+
+      send_parity :
+      tx = parity_bit;
+      next_state = send_first_stop;
+
+      send_first_stop :
+      tx = stop_b;
+      if(stop2)
+         next_state = send_sec_stop;
+      else
+         next_state = done;
+      
+      send_sec_stop :
+      tx = stop_b;
+      next_state = done;
+
+      done :
+      tx_done = 1'b1;
+      next_state = idle;
+
+      default : next_state = idle;
+
+   endcase
+end
+
+
