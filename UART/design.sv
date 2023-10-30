@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 
+//clk_generator
 module clk_gen(
    input clk, rst,
    input [16:0] baud,
@@ -96,3 +97,52 @@ always @(posedge clk) begin
    end
 end
 endmodule
+
+//tx
+module uart_tx(
+   input tx_clk, tx_start,
+   input rst,
+   input [7:0] tx_data,
+   input [3:0] length,
+   input parity_type, parity_en,
+   input stop2,
+   output reg tx, tx_done, tx_err
+);
+
+logic [7:0] tx_reg;
+
+logic start_b = 0;
+logic stop_b = 1;
+logic parity_bit = 0;
+integer count = 0;
+
+typedef enum bit [2:0] {idle = 0, start_bit = 1, send_data = 2, send_parity = 3, send_first_stop = 4, send_sec_stop = 5, done = 6} state_type;
+state_type state = idle, next_state = idle;
+
+//parity setting
+always@ (posedge tx_clk) begin
+   if(parity_type == 1'b1)
+   case(length)
+      4'd5 : parity_bit = ^(tx_data[4:0]);
+      4'd6 : parity_bit = ^(tx_data[5:0]);
+      4'd7 : parity_bit = ^(tx_data[6:0]);
+      4'd8 : parity_bit = ^(tx_data[7:0]);
+      default : parity_bit = 1'b0;
+   endcase
+   else
+   case(length)
+      4'd5 : parity_bit = ~^(tx_data[4:0]);
+      4'd6 : parity_bit = ~^(tx_data[5:0]);
+      4'd7 : parity_bit = ~^(tx_data[6:0]);
+      4'd8 : parity_bit = ~^(tx_data[7:0]);
+      default : parity_bit = 1'b0;
+   endcase
+end
+
+//reset setting
+always @(posedge tx_clk) begin
+   if(rst)
+      state <= idle;
+   else
+      state <= next_state;
+end
