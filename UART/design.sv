@@ -202,4 +202,30 @@ always@(*) begin
    endcase
 end
 
+always @(posedge tx_clk) begin
+   case(state)
+      idle :
+      count <=0;
 
+      start_bit :
+      count <= 0;
+
+      send_data :
+      count <= count + 1;
+
+      send_parity :
+      count <= 0;
+
+      send_first_stop :
+      count <= 0;
+
+      send_sec_stop :
+      count <= 0;
+
+      done :
+      count <= 0;
+
+      default :
+      count <= 0;
+   endcase
+end
