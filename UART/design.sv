@@ -229,3 +229,108 @@ always @(posedge tx_clk) begin
       count <= 0;
    endcase
 end
+endmodule
+
+module uart_rx(
+   input rx_clk, rx_start,
+   input rst, rx,
+   input [3:0] length,
+   input parity_type, parity_en,
+   input stop2,
+   output reg [7:0] rx_out,
+   output logic rx_done, rx_error
+);
+
+logic parity = 0;
+logic [7:0] datard = 0;
+int count = 0;
+int bit_count = 0;
+
+typedef enum bit [2:0] { idle = 0, start_bit = 1, recv_data = 2, check_parity = 3, check_first_stop = 4, check_sec_stop = 5, done = 6} state_type;
+state_type state = idle, next_state = idle;
+
+always @(posedge rx_clk) begin
+   if(rst)
+      state <= idle;
+   else
+      state <= next_state;
+end
+
+always @(posedge rx_clk) begin
+   case(state)
+      idle :
+      rx_done = 0;
+      rx_error = 0;
+      if (rx_start && !rx)
+         next_state = start_bit;
+      else
+         next_state = idle;
+      
+      start_bit :
+      if(count == 7 && rx)
+         next_state = idle;
+      else if (count == 15)
+         next_state = recv_data;
+      else
+         next_state = start_bit;
+
+      recv_data :
+      datard[7:0] = {rx, datard[7:1]};
+      else if(count == 15 && bit_count == (length - 1))
+      case(length)
+         5: rx_out = datard[7:3];
+         6: rx_out = datard[7:2];
+         7: rx_out = datard[7:1];
+         8: rx_out = datard[7:0];
+         default : rx_out = 8'h00;
+      endcase
+
+      if (parity_type)
+         parity = ^datard;
+      else
+         parity = !^datard;
+
+      if (parity_en)
+         next_state = check_parity;
+      else
+         next_state = check_first_stop;
+      else
+         next_state = recv_data;
+
+      check_parity :
+      if (count < 15)
+         count <= count + 1;
+      else
+         count <= 0;
+
+      check_first_stop :
+      if (count < 15)
+         count <= count + 1;
+      else
+         count <= 0;
+
+      check_sec_stop :
+      if (count < 15)
+         count <= count + 1;
+      else
+         count <= 0;
+
+      done :
+      count <= 0;
+      bit_count <= 0;
+   endcase
+endmodule
+
+module uart_top
+(
+   input clk, rst,
+   input tx_start, rx_start,
+   input [7:0] tx_data,
+   input [16:0] baud,
+   input [3:0] length,
+   input parity_type, parity_en,
+   input stop2,
+   output tx_done, rx_done, tx_err, rx_err,
+   output [7:0] rx_out
+);
+endmodule
