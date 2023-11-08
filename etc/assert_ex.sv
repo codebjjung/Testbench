@@ -39,3 +39,10 @@ always @(*) begin
    endcase
 end
 endmodule
+
+property add;
+   @(posedge clk) (st==1 && op == 00) |=> {carry,result} = a + b;
+endproperty
+
+assert property add;
+$display("pass");
