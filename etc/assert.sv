@@ -44,7 +44,7 @@ module tb;
 
    always #10 clk = ~clk;
 
-   assertion assert_module();
+   assertion assert_module(.a(a), .b(b), .c(c), .d(d), .clk(clk));
 
    dut dut_module(a,b,d);
 
